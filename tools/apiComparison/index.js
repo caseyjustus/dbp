@@ -2,17 +2,19 @@
 import _ from 'lodash';
 import fs from 'fs';
 
-let dataSet = 'library-volumelanguage'
+//let dataSet = 'audio-versestart'
+let dataSet = 'library-book'
 
 let dbp2 = JSON.parse(fs.readFileSync('./stock-json/'+dataSet+'/dbp2-response.json'));
 let dbp4 = JSON.parse(fs.readFileSync('./stock-json/'+dataSet+'/dbp4-response.json'));
 
 
 function allV2PropertiesPresent(resV2, resV4) {
+    let matches = true
 
     function compareByList(listV2, listV4){
         let diff =  _.difference(_.keys(listV2[0]), _.keys(listV4[0]) ).length === 0;
-        if (!diff){return false}
+        if (!diff){ matches = false }
     }
 
     //compare top level
@@ -24,11 +26,13 @@ function allV2PropertiesPresent(resV2, resV4) {
             compareByList(resV2[0][name], resV4[0][name])
         }
     })
-    return true
+    return matches
     
 }
 function getObjectDiff(x, y) {
+    console.log(y)
     return _(x).xorWith(y, _.isEqual).isEmpty();
   };
 
-getObjectDiff(dbp2, dbp4)
+  allV2PropertiesPresent(dbp2, dbp4)
+//  getObjectDiff(dbp2, dbp4)
